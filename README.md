@@ -24,4 +24,3 @@ cargo build --release
 ```
 
 This will execute the pipeline for all dates between 2014-2022 and aggregate some metrics.
-There is a jupyter notebook in the `analytics` directory which contains some plots based on the output of the pipeline.
