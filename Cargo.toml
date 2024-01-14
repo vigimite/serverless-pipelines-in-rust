@@ -1,0 +1,13 @@
+[package]
+name = "serverless-pipelines-in-rust"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+chrono = { version = "0.4.31", features = ["serde"] }
+datafusion = "34.0.0"
+deltalake = { git = "https://github.com/delta-io/delta-rs", branch = "main", features = ["datafusion", "s3", "glue"] }
+tokio = "1.35.1"
+ 
