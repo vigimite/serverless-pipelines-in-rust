@@ -1,0 +1,5 @@
+matplotlib~=3.8
+pandas~=2.1
+deltalake~=0.15
+requests~=2.31
+folium~=0.15
