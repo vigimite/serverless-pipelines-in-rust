@@ -10,4 +10,3 @@ target/
 delta_lake
 example_data
 nyc_taxi_data/raw_data
-analytics

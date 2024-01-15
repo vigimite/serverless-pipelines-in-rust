@@ -1,18 +1,18 @@
 use chrono::NaiveDate;
-use datafusion::{error::DataFusionError, prelude::*};
+use datafusion::{arrow::datatypes::DataType, error::DataFusionError, prelude::*};
 use deltalake::DeltaOps;
 use serverless_pipelines_in_rust::*;
 
 #[tokio::main]
 async fn main() -> Result<(), DataFusionError> {
-    let args: Vec<String> = std::env::args().collect();
+    let args = std::env::args().collect::<Vec<String>>();
     let input_date = NaiveDate::parse_from_str(&args[1], "%Y-%m-%d").expect("incorrect input date");
 
     // Load or create delta table called trips
-    // Check trips_table_schema for schema definition
+    // Check trip_metrics_table_schema for schema definition
     let trips_table = get_delta_table(
-        "./delta_lake/trips",
-        trips_table_schema(),
+        "./delta_lake/trip_stats",
+        trip_stats_table_schema(),
         Some(vec!["year"]),
     )
     .await?;
@@ -20,7 +20,7 @@ async fn main() -> Result<(), DataFusionError> {
     // Read input data
     // can be downloaded using `./nyc_taxi_data/download_data.py`
     let input_path = format!(
-        "./nyc_taxi_data/raw_data/{year}/{month}/yellow_tripdata_{year}-{month}.parquet",
+        "./nyc_taxi_data/raw_data/{year}/yellow_tripdata_{year}-{month}.parquet",
         year = input_date.format("%Y"),
         month = input_date.format("%m")
     );
@@ -42,23 +42,46 @@ async fn main() -> Result<(), DataFusionError> {
     let df = df
         .select(vec![
             col("tpep_pickup_datetime"),
+            col("tpep_dropoff_datetime"),
+            col(r#""PULocationID""#).alias("pickup_location_id"),
+            col(r#""DOLocationID""#).alias("dropoff_location_id"),
+            col("trip_distance"),
             col("passenger_count"),
             col("total_amount"),
             col("tip_amount"),
         ])?
+        .with_column("date", cast(col("tpep_pickup_datetime"), DataType::Date32))?
         .with_column(
-            "date",
+            "year",
+            cast(date_part(lit("year"), col("date")), DataType::Int32),
+        )?
+        .with_column(
+            "hour",
             cast(
-                col("tpep_pickup_datetime"),
-                datafusion::arrow::datatypes::DataType::Date32,
+                date_part(lit("hour"), col("tpep_pickup_datetime")),
+                DataType::Int32,
             ),
         )?
         .with_column(
-            "year",
+            "trip_duration_m",
             cast(
-                date_part(lit("year"), col("date")),
-                datafusion::arrow::datatypes::DataType::Int32,
-            ),
+                col("tpep_dropoff_datetime") - col("tpep_pickup_datetime"),
+                DataType::Int64,
+            ) / lit(1000000_i32)
+                / lit(60_i32),
+        )?
+        .with_column(
+            "time_of_day",
+            when(col("hour").between(lit(5_i32), lit(12_i32)), lit("MORNING"))
+                .when(
+                    col("hour").between(lit(12_i32), lit(17_i32)),
+                    lit("AFTERNOON"),
+                )
+                .when(
+                    col("hour").between(lit(17_i32), lit(21_i32)),
+                    lit("EVENING"),
+                )
+                .otherwise(lit("NIGHT"))?,
         )?;
 
     // println!("\n--- Raw dataset ---");
@@ -68,20 +91,29 @@ async fn main() -> Result<(), DataFusionError> {
     let filter_date = input_date.format("%Y-%m-%d").to_string();
     let df = df.filter(date_trunc(lit("MONTH"), col("date")).eq(cast(
         date_trunc(lit("MONTH"), lit(filter_date)),
-        datafusion::arrow::datatypes::DataType::Date32,
+        DataType::Date32,
     )))?;
 
     // Aggregate to get our desired report
     let result = df
         .aggregate(
-            vec![col("year"), col("date")],
+            vec![
+                col("year"),
+                col("date"),
+                col("time_of_day"),
+                col("pickup_location_id"),
+                col("dropoff_location_id"),
+            ],
             vec![
                 count(lit(1_i32)).alias("trip_count"),
-                sum(col("passenger_count")).alias("num_passengers"),
+                sum(coalesce(vec![col("passenger_count"), lit(0)])).alias("num_passengers"),
+                avg(col("trip_duration_m")).alias("avg_trip_duration_m"),
                 avg(col("total_amount")).alias("avg_amount"),
                 avg(col("tip_amount")).alias("avg_tip"),
-                median(col("total_amount")).alias("median_amount"),
-                median(col("tip_amount")).alias("median_tip"),
+                min(col("total_amount")).alias("min_amount"),
+                max(col("total_amount")).alias("max_amount"),
+                min(col("tip_amount")).alias("min_tip"),
+                max(col("tip_amount")).alias("max_tip"),
             ],
         )?
         .sort(vec![col("date").sort(true, false)])?
@@ -98,7 +130,10 @@ async fn main() -> Result<(), DataFusionError> {
             result,
             col("target.year")
                 .eq(col("source.year"))
-                .and(col("target.date").eq(col("source.date"))),
+                .and(col("target.date").eq(col("source.date")))
+                .and(col("target.time_of_day").eq(col("source.time_of_day")))
+                .and(col("target.pickup_location_id").eq(col("source.pickup_location_id")))
+                .and(col("target.dropoff_location_id").eq(col("source.dropoff_location_id"))),
         )
         .with_source_alias("source")
         .with_target_alias("target")
@@ -108,21 +143,30 @@ async fn main() -> Result<(), DataFusionError> {
             insert
                 .set("year", col("source.year"))
                 .set("date", col("source.date"))
+                .set("time_of_day", col("source.time_of_day"))
+                .set("pickup_location_id", col("source.pickup_location_id"))
+                .set("dropoff_location_id", col("source.dropoff_location_id"))
                 .set("trip_count", col("source.trip_count"))
                 .set("num_passengers", col("source.num_passengers"))
+                .set("avg_trip_duration_m", col("source.avg_trip_duration_m"))
                 .set("avg_amount", col("source.avg_amount"))
                 .set("avg_tip", col("source.avg_tip"))
-                .set("median_amount", col("source.median_amount"))
-                .set("median_tip", col("source.median_tip"))
+                .set("min_amount", col("source.min_amount"))
+                .set("max_amount", col("source.max_amount"))
+                .set("min_tip", col("source.min_tip"))
+                .set("max_tip", col("source.max_tip"))
         })?
         .when_matched_update(|update| {
             update
                 .update("trip_count", col("source.trip_count"))
                 .update("num_passengers", col("source.num_passengers"))
+                .update("avg_trip_duration_m", col("source.avg_trip_duration_m"))
                 .update("avg_amount", col("source.avg_amount"))
                 .update("avg_tip", col("source.avg_tip"))
-                .update("median_amount", col("source.median_amount"))
-                .update("median_tip", col("source.median_tip"))
+                .update("min_amount", col("source.min_amount"))
+                .update("max_amount", col("source.max_amount"))
+                .update("min_tip", col("source.min_tip"))
+                .update("max_tip", col("source.max_tip"))
         })?
         .await?;
 

@@ -3,10 +3,25 @@ use deltalake::{
     DeltaOps, DeltaTable, DeltaTableError,
 };
 
-pub fn trips_table_schema() -> StructType {
+pub fn trip_stats_table_schema() -> StructType {
     StructType::new(vec![
         StructField::new("year", DataType::Primitive(PrimitiveType::String), false),
         StructField::new("date", DataType::Primitive(PrimitiveType::Date), false),
+        StructField::new(
+            "time_of_day",
+            DataType::Primitive(PrimitiveType::String),
+            false,
+        ),
+        StructField::new(
+            "pickup_location_id",
+            DataType::Primitive(PrimitiveType::Integer),
+            false,
+        ),
+        StructField::new(
+            "dropoff_location_id",
+            DataType::Primitive(PrimitiveType::Integer),
+            false,
+        ),
         StructField::new(
             "trip_count",
             DataType::Primitive(PrimitiveType::Integer),
@@ -18,21 +33,28 @@ pub fn trips_table_schema() -> StructType {
             false,
         ),
         StructField::new(
-            "avg_amount",
+            "avg_trip_duration_m",
             DataType::Primitive(PrimitiveType::Float),
             false,
         ),
         StructField::new(
-            "median_amount",
+            "avg_amount",
             DataType::Primitive(PrimitiveType::Float),
             false,
         ),
         StructField::new("avg_tip", DataType::Primitive(PrimitiveType::Float), false),
         StructField::new(
-            "median_tip",
+            "min_amount",
             DataType::Primitive(PrimitiveType::Float),
             false,
         ),
+        StructField::new(
+            "max_amount",
+            DataType::Primitive(PrimitiveType::Float),
+            false,
+        ),
+        StructField::new("min_tip", DataType::Primitive(PrimitiveType::Float), false),
+        StructField::new("max_tip", DataType::Primitive(PrimitiveType::Float), false),
     ])
 }
 
