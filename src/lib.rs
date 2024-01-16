@@ -6,20 +6,9 @@ use deltalake::{
 pub fn trip_stats_table_schema() -> StructType {
     StructType::new(vec![
         StructField::new("year", DataType::Primitive(PrimitiveType::String), false),
-        StructField::new("date", DataType::Primitive(PrimitiveType::Date), false),
         StructField::new(
-            "time_of_day",
-            DataType::Primitive(PrimitiveType::String),
-            false,
-        ),
-        StructField::new(
-            "pickup_location_id",
-            DataType::Primitive(PrimitiveType::Integer),
-            false,
-        ),
-        StructField::new(
-            "dropoff_location_id",
-            DataType::Primitive(PrimitiveType::Integer),
+            "month_start",
+            DataType::Primitive(PrimitiveType::Date),
             false,
         ),
         StructField::new(
@@ -28,12 +17,17 @@ pub fn trip_stats_table_schema() -> StructType {
             false,
         ),
         StructField::new(
-            "num_passengers",
-            DataType::Primitive(PrimitiveType::Integer),
+            "avg_passengers",
+            DataType::Primitive(PrimitiveType::Float),
             false,
         ),
         StructField::new(
-            "avg_trip_duration_m",
+            "avg_trip_distance_miles",
+            DataType::Primitive(PrimitiveType::Float),
+            false,
+        ),
+        StructField::new(
+            "avg_trip_duration_minutes",
             DataType::Primitive(PrimitiveType::Float),
             false,
         ),
@@ -43,18 +37,32 @@ pub fn trip_stats_table_schema() -> StructType {
             false,
         ),
         StructField::new("avg_tip", DataType::Primitive(PrimitiveType::Float), false),
+    ])
+}
+
+pub fn location_stats_table_schema() -> StructType {
+    StructType::new(vec![
+        StructField::new("year", DataType::Primitive(PrimitiveType::String), false),
         StructField::new(
-            "min_amount",
-            DataType::Primitive(PrimitiveType::Float),
+            "month_start",
+            DataType::Primitive(PrimitiveType::Date),
             false,
         ),
         StructField::new(
-            "max_amount",
-            DataType::Primitive(PrimitiveType::Float),
+            "location_id",
+            DataType::Primitive(PrimitiveType::Integer),
             false,
         ),
-        StructField::new("min_tip", DataType::Primitive(PrimitiveType::Float), false),
-        StructField::new("max_tip", DataType::Primitive(PrimitiveType::Float), false),
+        StructField::new(
+            "num_pickups",
+            DataType::Primitive(PrimitiveType::Integer),
+            false,
+        ),
+        StructField::new(
+            "num_dropoffs",
+            DataType::Primitive(PrimitiveType::Integer),
+            false,
+        ),
     ])
 }
 

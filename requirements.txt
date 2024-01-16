@@ -1,5 +1,7 @@
 matplotlib~=3.8
-pandas~=2.1
+geopandas~=0.14
+contextily~=1.5
+numpy~=1.26
 deltalake~=0.15
 requests~=2.31
-folium~=0.15
+seaborn~=0.13

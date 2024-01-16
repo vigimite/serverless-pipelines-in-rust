@@ -10,6 +10,8 @@ In this codebase we explore how to write a data pipeline using technologies like
 - delta lake
 - cargo lambda
 
+## Setup
+
 To run this example you will have to download the sample dataset using the following commands:
 
 ```bash
@@ -20,31 +22,31 @@ pip install -r requirements.txt
 cd nyc_taxi_data
 python download_data.py
 
-# Build the project
+# Build the project from root dir
 cargo build --release
 
-# Use the shell script to run the pipeline
+# Use the shell script to run the pipeline for all months
 ./invoke_pipeline.sh
 
 # Check some analytics
-python ./analytics/basic_plotting.py
+cd analytics
+python 1_trip_stats_plot.py
+python 2_geo_plot.py
 ```
 
 This will execute the pipeline for all dates between 2014-2022 and aggregate some metrics.
 
 ## Objectives
 
-Optimization problem from the perspective of a taxi business
+Compute the following values per month
 
-Which routes are the most valuable to take?
+1. avg trip duration
+2. avg trip distance
+3. avg amount of passengers
+4. avg price & tip 
 
-- corelate date, location, price, trip duration
-- chunk day into sections
-  - morning/noon/evening/late night
+Compute the following location data
 
-## Steps to solve
+1. number of trips from a pick up location
+2. number of trips to a destination
 
-1. load all of the data
-2. fill table with the aggregated metrics
-3. resolve zone info
-4. plot data
