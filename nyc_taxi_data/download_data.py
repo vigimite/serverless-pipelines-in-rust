@@ -4,11 +4,11 @@ import time
 import requests
 
 # Define the input file containing the URLs
-input_file = 'download_urls.txt'
+input_file = 'nyc_taxi_data/download_urls.txt'
 pattern = r'yellow_tripdata_(\d{4})-(\d{2})\.parquet'
 
-# Define the output folder where you want to save the files
-output_folder = 'raw_data'
+# Define the output folder
+output_folder = 'nyc_taxi_data/raw_data'
 
 # Create the output folder if it doesn't exist
 os.makedirs(output_folder, exist_ok=True)

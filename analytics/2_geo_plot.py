@@ -5,10 +5,10 @@ from deltalake import DeltaTable
 import numpy as np
 
 # Load data from Delta tables
-location_stats_df = DeltaTable("../delta_lake/location_stats").to_pandas()
+location_stats_df = DeltaTable("./delta_lake/location_stats").to_pandas()
 
 # Load geographic data
-geo_df = gpd.read_file('shapefile.geojson')
+geo_df = gpd.read_file('./analytics/shapefile.geojson')
 
 # Merge location stats with geographic data
 geo_df['location_id'] = geo_df['location_id'].astype(int)

@@ -19,8 +19,7 @@ To run this example you will have to download the sample dataset using the follo
 pip install -r requirements.txt
 
 # Download some data from the NYC open data initiative, in this case data about yellowcab trips from 2014-2022
-cd nyc_taxi_data
-python download_data.py
+python nyc_taxi_data/download_data.py
 
 # Build the project from root dir
 cargo build --release
@@ -29,9 +28,8 @@ cargo build --release
 ./invoke_pipeline.sh
 
 # Check some analytics
-cd analytics
-python 1_trip_stats_plot.py
-python 2_geo_plot.py
+python nyc_taxi_data/1_trip_stats_plot.py
+python nyc_taxi_data/2_geo_plot.py
 ```
 
 This will execute the pipeline for all dates between 2014-2022 and aggregate some metrics.

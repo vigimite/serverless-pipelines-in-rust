@@ -3,7 +3,7 @@ import seaborn as sns
 from deltalake import DeltaTable
 from matplotlib.dates import DateFormatter
 
-trip_stats_df = DeltaTable("../delta_lake/trip_stats").to_pandas()
+trip_stats_df = DeltaTable("./delta_lake/trip_stats").to_pandas()
 
 plt.figure(figsize=(20, 10))
 
