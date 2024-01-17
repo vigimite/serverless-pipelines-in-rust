@@ -3,6 +3,8 @@ use deltalake::{
     DeltaOps, DeltaTable, DeltaTableError,
 };
 
+pub mod queries;
+
 pub fn trip_stats_table_schema() -> StructType {
     StructType::new(vec![
         StructField::new("year", DataType::Primitive(PrimitiveType::String), false),

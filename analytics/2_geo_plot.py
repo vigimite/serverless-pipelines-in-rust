@@ -33,3 +33,23 @@ ax.axis('off')
 
 # Show the plot
 plt.show()
+
+# Plotting the Geographic Heatmap for Location Stats
+merged_df['log_num_dropoffs'] = merged_df['num_dropoffs'].replace(0, 1).apply(np.log)
+ax = merged_df.plot(column='log_num_dropoffs',
+                    cmap='plasma',
+                    edgecolor='black',
+                    legend=True,
+                    legend_kwds={'label': "Number of Dropoffs"},
+                    alpha=0.75,
+                    linewidth=0.5)
+
+# Adding a basemap for context
+ctx.add_basemap(ax, crs=merged_df.crs.to_string(), source=ctx.providers.CartoDB.Positron)
+
+# Adjusting plot settings
+plt.title('NYC Heatmap of Dropoffs (Log scale)')
+ax.axis('off')
+
+# Show the plot
+plt.show()

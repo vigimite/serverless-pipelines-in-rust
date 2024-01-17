@@ -2,12 +2,26 @@
 name = "serverless-pipelines-in-rust"
 version = "0.1.0"
 edition = "2021"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+authors = ["<michelevig@protonmail.com>"]
+readme = "README.md"
+publish = false
+default-run = "serverless-pipelines-in-rust"
 
 [dependencies]
 chrono = { version = "0.4.31", features = ["serde"] }
 datafusion = "34.0.0"
 deltalake = { git = "https://github.com/delta-io/delta-rs", branch = "main", features = ["datafusion", "s3", "glue"] }
+lambda_runtime = "0.9.1"
+log = "0.4.20"
+simple_logger = "4.3.3"
+serde_json = "1.0.111"
 tokio = "1.35.1"
  
+
+[[bin]]
+name = "serverless-pipelines-in-rust"
+path = "src/main.rs"
+
+[[bin]]
+name = "bootstrap"
+path = "src/lambda_main.rs"
