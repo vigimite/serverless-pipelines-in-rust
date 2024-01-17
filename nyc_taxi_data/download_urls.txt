@@ -105,3 +105,16 @@ https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2022-08.parquet
 https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2022-09.parquet
 https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2022-10.parquet
 https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2022-11.parquet
+https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2022-12.parquet
+https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2023-01.parquet
+https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2023-02.parquet
+https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2023-03.parquet
+https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2023-04.parquet
+https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2023-05.parquet
+https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2023-06.parquet
+https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2023-07.parquet
+https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2023-08.parquet
+https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2023-09.parquet
+https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2023-10.parquet
+https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2023-11.parquet
+https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2023-12.parquet

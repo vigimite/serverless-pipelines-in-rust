@@ -18,7 +18,7 @@ To run this example you will have to download the sample dataset using the follo
 # Install python code requirements
 pip install -r requirements.txt
 
-# Download some data from the NYC open data initiative, in this case data about yellowcab trips from 2014-2022
+# Download some data from the NYC open data initiative, in this case data about yellowcab trips from 2014-2023
 python nyc_taxi_data/download_data.py
 
 # Build the project from root dir
@@ -32,7 +32,7 @@ python nyc_taxi_data/1_trip_stats_plot.py
 python nyc_taxi_data/2_geo_plot.py
 ```
 
-This will execute the pipeline for all dates between 2014-2022 and aggregate some metrics.
+This will execute the pipeline for all dates between 2014-2023 and aggregate some metrics.
 
 ## Objectives
 
