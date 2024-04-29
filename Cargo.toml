@@ -1,6 +1,6 @@
 [package]
 name = "serverless-pipelines-in-rust"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 authors = ["<michelevig@protonmail.com>"]
 readme = "README.md"
